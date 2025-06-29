@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 
 
 export const metadata: Metadata = {
@@ -18,15 +16,6 @@ export const metadata: Metadata = {
   },
 }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBNqJw9U88hJzpjeY2aRoTIf54HmAIbccM",
-  authDomain: "astork-525aa.firebaseapp.com",
-  projectId: "astork-525aa",
-  storageBucket: "astork-525aa.firebasestorage.app",
-  messagingSenderId: "253564332150",
-  appId: "1:253564332150:web:d6f299d967bacfabf61757",
-  measurementId: "G-HLCT3EH7BM"
-};
 
 export default function RootLayout({
   children,

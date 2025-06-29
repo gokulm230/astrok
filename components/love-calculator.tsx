@@ -35,30 +35,47 @@ export function LoveCalculator() {
     zodiac1: "",
     name2: "",
     zodiac2: "",
+    language: "english",
   })
   const [result, setResult] = useState<any>(null)
   const [isCalculating, setIsCalculating] = useState(false)
 
   const zodiacSigns = [
-    "Aries",
-    "Taurus",
-    "Gemini",
-    "Cancer",
-    "Leo",
-    "Virgo",
-    "Libra",
-    "Scorpio",
-    "Sagittarius",
-    "Capricorn",
-    "Aquarius",
-    "Pisces",
+    { english: "Aries", tamil: "மேஷம் (Mesham)" },
+    { english: "Taurus", tamil: "ரிஷபம் (Rishabam)" },
+    { english: "Gemini", tamil: "மிதுனம் (Mithunam)" },
+    { english: "Cancer", tamil: "கடகம் (Kadagam)" },
+    { english: "Leo", tamil: "சிம்மம் (Simmam)" },
+    { english: "Virgo", tamil: "கன்னி (Kanni)" },
+    { english: "Libra", tamil: "துலாம் (Thulam)" },
+    { english: "Scorpio", tamil: "விருச்சிகம் (Viruchigam)" },
+    { english: "Sagittarius", tamil: "தனுசு (Dhanusu)" },
+    { english: "Capricorn", tamil: "மகரம் (Magaram)" },
+    { english: "Aquarius", tamil: "கும்பம் (Kumbam)" },
+    { english: "Pisces", tamil: "மீனம் (Meenam)" },
   ]
 
   const calculateCompatibility = async () => {
     setIsCalculating(true)
 
     try {
-      const prompt = `As an expert astrologer specializing in love compatibility, analyze the romantic compatibility between these two people:
+      const prompt = formData.language === 'tamil'
+        ? `நீங்கள் காதல் இணக்கத்தில் நிபுணத்துவம் பெற்ற ஜோதிடர். இந்த இரு நபர்களுக்கிடையே உள்ள காதல் இணக்கத்தை பகுப்பாய்வு செய்யுங்கள்:
+
+நபர் 1: ${formData.name1} (${formData.zodiac1} ராசி)
+நபர் 2: ${formData.name2} (${formData.zodiac2} ராசி)
+
+தயவுசெய்து பின்வரும் JSON வடிவத்தில் மட்டும் பதிலளிக்கவும், கூடுதல் உரை வேண்டாம்:
+{
+  "compatibility": 60-100 இடையே எண்,
+  "description": "விரிவான காதல் இணக்க கண்ணோட்டம் (2-3 வாக்கியங்கள்)",
+  "strengths": ["வலிமை 1", "வலிமை 2", "வலிமை 3"],
+  "challenges": ["சவால் 1", "சவால் 2"],
+  "advice": "இந்த ஜோடிக்கான நடைமுறை உறவு ஆலோசனை (2-3 வாக்கியங்கள்)"
+}
+
+உறுப்பு இணக்கம், ஆளுமை பண்புகள் மற்றும் உறவு இயக்கவியல் ஆகியவற்றைக் கருத்தில் கொண்டு ஜோதிட இணக்க கொள்கைகளின் அடிப்படையில் உங்கள் பகுப்பாய்வை அடிப்படையாகக் கொள்ளுங்கள். ஜோதிட பாரம்பரியங்களுக்கு உண்மையாக இருக்கும் போது தனிப்பட்ட, நுண்ணறிவு மற்றும் ஊக்கமளிக்கும் வகையில் அதை உருவாக்குங்கள். முழு பதிலும் தமிழில் இருக்க வேண்டும்.`
+        : `As an expert astrologer specializing in love compatibility, analyze the romantic compatibility between these two people:
 
 Person 1: ${formData.name1} (${formData.zodiac1} zodiac sign)
 Person 2: ${formData.name2} (${formData.zodiac2} zodiac sign)
@@ -118,10 +135,18 @@ Base your analysis on astrological compatibility principles, considering element
       // Set the result with AI-generated data
       setResult({
         compatibility: parsedResult.compatibility || Math.floor(Math.random() * 40) + 60,
-        description: parsedResult.description || "You two have a special cosmic connection that brings unique energies together.",
-        strengths: parsedResult.strengths || ["Emotional connection", "Shared values", "Complementary traits"],
-        challenges: parsedResult.challenges || ["Communication styles", "Different approaches to life"],
-        advice: parsedResult.advice || "Focus on understanding each other's perspectives and celebrating your differences."
+        description: parsedResult.description || (formData.language === 'tamil' 
+          ? "நீங்கள் இருவரும் தனித்துவமான ஆற்றல்களைக் கொண்டுவரும் ஒரு சிறப்பு அண்ட தொடர்பு உள்ளது."
+          : "You two have a special cosmic connection that brings unique energies together."),
+        strengths: parsedResult.strengths || (formData.language === 'tamil'
+          ? ["உணர்ச்சி தொடர்பு", "பகிரப்பட்ட மதிப்புகள்", "நிரப்பு பண்புகள்"]
+          : ["Emotional connection", "Shared values", "Complementary traits"]),
+        challenges: parsedResult.challenges || (formData.language === 'tamil'
+          ? ["தொடர்பு பாணிகள்", "வாழ்க்கைக்கான வெவ்வேறு அணுகுமுறைகள்"]
+          : ["Communication styles", "Different approaches to life"]),
+        advice: parsedResult.advice || (formData.language === 'tamil'
+          ? "ஒருவருக்கொருவர் கண்ணோட்டங்களைப் புரிந்துகொள்வதிலும் உங்கள் வேறுபாடுகளைக் கொண்டாடுவதிலும் கவனம் செலுத்துங்கள்."
+          : "Focus on understanding each other's perspectives and celebrating your differences.")
       })
 
     } catch (error) {
@@ -131,14 +156,26 @@ Base your analysis on astrological compatibility principles, considering element
       const fallbackCompatibility = Math.floor(Math.random() * 40) + 60
       setResult({
         compatibility: fallbackCompatibility,
-        description: fallbackCompatibility > 85
-          ? "You two are a perfect cosmic match! Your energies complement each other beautifully."
-          : fallbackCompatibility > 70
-            ? "Great compatibility! You share many harmonious traits and can build a strong relationship."
-            : "Good potential! With understanding and communication, you can create a wonderful bond.",
-        strengths: ["Emotional connection", "Shared values", "Complementary traits"],
-        challenges: ["Communication styles", "Different approaches to life"],
-        advice: "Focus on open communication and mutual respect to strengthen your bond."
+        description: formData.language === 'tamil'
+          ? (fallbackCompatibility > 85
+              ? "நீங்கள் இருவரும் ஒரு சரியான அண்ட ஜோடி! உங்கள் ஆற்றல்கள் ஒருவருக்கொருவர் அழகாக நிரப்புகின்றன."
+              : fallbackCompatibility > 70
+                ? "சிறந்த இணக்கம்! நீங்கள் பல இணக்கமான பண்புகளைப் பகிர்ந்து கொள்கிறீர்கள் மற்றும் வலுவான உறவை உருவாக்க முடியும்."
+                : "நல்ல சாத்தியம்! புரிதல் மற்றும் தொடர்பு மூலம், நீங்கள் ஒரு அற்புதமான பிணைப்பை உருவாக்க முடியும்.")
+          : (fallbackCompatibility > 85
+              ? "You two are a perfect cosmic match! Your energies complement each other beautifully."
+              : fallbackCompatibility > 70
+                ? "Great compatibility! You share many harmonious traits and can build a strong relationship."
+                : "Good potential! With understanding and communication, you can create a wonderful bond."),
+        strengths: formData.language === 'tamil'
+          ? ["உணர்ச்சி தொடர்பு", "பகிரப்பட்ட மதிப்புகள்", "நிரப்பு பண்புகள்"]
+          : ["Emotional connection", "Shared values", "Complementary traits"],
+        challenges: formData.language === 'tamil'
+          ? ["தொடர்பு பாணிகள்", "வாழ்க்கைக்கான வெவ்வேறு அணுகுமுறைகள்"]
+          : ["Communication styles", "Different approaches to life"],
+        advice: formData.language === 'tamil'
+          ? "உங்கள் பிணைப்பை வலுப்படுத்த திறந்த தொடர்பு மற்றும் பரஸ்பர மரியாதையில் கவனம் செலுத்துங்கள்."
+          : "Focus on open communication and mutual respect to strengthen your bond."
       })
     } finally {
       setIsCalculating(false)
@@ -199,8 +236,8 @@ Base your analysis on astrological compatibility principles, considering element
                       </SelectTrigger>
                       <SelectContent>
                         {zodiacSigns.map((sign) => (
-                          <SelectItem key={sign} value={sign.toLowerCase()}>
-                            {sign}
+                          <SelectItem key={sign.english} value={sign.english.toLowerCase()}>
+                            {sign.english} - {sign.tamil}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -234,14 +271,30 @@ Base your analysis on astrological compatibility principles, considering element
                       </SelectTrigger>
                       <SelectContent>
                         {zodiacSigns.map((sign) => (
-                          <SelectItem key={sign} value={sign.toLowerCase()}>
-                            {sign}
+                          <SelectItem key={`person2-${sign.english}`} value={sign.english.toLowerCase()}>
+                            {sign.english} - {sign.tamil}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Language Selection */}
+            <div className="mb-8">
+              <div className="max-w-md mx-auto">
+                <Label className="text-gray-700 font-medium">Language / மொழி</Label>
+                <Select value={formData.language} onValueChange={(value) => handleInputChange("language", value)}>
+                  <SelectTrigger className="border-gray-200 focus:border-pink-400">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="english">English</SelectItem>
+                    <SelectItem value="tamil">தமிழ் (Tamil)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

@@ -23,52 +23,53 @@ export function AstrologyForm({ onSubmit }: AstrologyFormProps) {
     placeOfBirth: "",
     rasi: "",
     nachathira: "",
+    language: "english",
   })
   const [isLoading, setIsLoading] = useState(false)
 
   const zodiacSigns = [
-    "Aries",
-    "Taurus",
-    "Gemini",
-    "Cancer",
-    "Leo",
-    "Virgo",
-    "Libra",
-    "Scorpio",
-    "Sagittarius",
-    "Capricorn",
-    "Aquarius",
-    "Pisces",
+    { english: "Aries", tamil: "மேஷம் (Mesham)" },
+    { english: "Taurus", tamil: "ரிஷபம் (Rishabam)" },
+    { english: "Gemini", tamil: "மிதுனம் (Mithunam)" },
+    { english: "Cancer", tamil: "கடகம் (Kadagam)" },
+    { english: "Leo", tamil: "சிம்மம் (Simmam)" },
+    { english: "Virgo", tamil: "கன்னி (Kanni)" },
+    { english: "Libra", tamil: "துலாம் (Thulam)" },
+    { english: "Scorpio", tamil: "விருச்சிகம் (Viruchigam)" },
+    { english: "Sagittarius", tamil: "தனுசு (Dhanusu)" },
+    { english: "Capricorn", tamil: "மகரம் (Magaram)" },
+    { english: "Aquarius", tamil: "கும்பம் (Kumbam)" },
+    { english: "Pisces", tamil: "மீனம் (Meenam)" },
   ]
 
   const nakshatras = [
-    "Ashwini",
-    "Bharani",
-    "Krittika",
-    "Rohini",
-    "Mrigashira",
-    "Ardra",
-    "Punarvasu",
-    "Pushya",
-    "Ashlesha",
-    "Magha",
-    "Purva Phalguni",
-    "Uttara Phalguni",
-    "Hasta",
-    "Chitra",
-    "Swati",
-    "Vishakha",
-    "Anuradha",
-    "Jyeshtha",
-    "Mula",
-    "Purva Ashadha",
-    "Uttara Ashadha",
-    "Shravana",
-    "Dhanishta",
-    "Shatabhisha",
-    "Purva Bhadrapada",
-    "Uttara Bhadrapada",
-    "Revati",
+    { english: "Ashwini", tamil: "அசுவினி (Ashwini)" },
+    { english: "Bharani", tamil: "பரணி (Bharani)" },
+    { english: "Krittika", tamil: "கிருத்திகை (Krithigai)" },
+    { english: "Rohini", tamil: "ரோஹிணி (Rohini)" },
+    { english: "Mrigashira", tamil: "மிருகசீரிஷம் (Mirugaseerisham)" },
+    { english: "Ardra", tamil: "திருவாதிரை (Thiruvadhirai)" },
+    { english: "Punarvasu", tamil: "புனர்பூசம் (Punarpusam)" },
+    { english: "Pushya", tamil: "பூசம் (Pusam)" },
+    { english: "Ashlesha", tamil: "ஆயில்யம் (Ayilyam)" },
+    { english: "Magha", tamil: "மகம் (Magam)" },
+    { english: "Purva Phalguni", tamil: "பூரம் (Puram)" },
+    { english: "Uttara Phalguni", tamil: "உத்திரம் (Uthiram)" },
+    { english: "Hasta", tamil: "ஹஸ்தம் (Hastam)" },
+    { english: "Chitra", tamil: "சித்திரை (Chithirai)" },
+    { english: "Swati", tamil: "சுவாதி (Swathi)" },
+    { english: "Vishakha", tamil: "விசாகம் (Visakam)" },
+    { english: "Anuradha", tamil: "அனுஷம் (Anusham)" },
+    { english: "Jyeshtha", tamil: "கேட்டை (Kettai)" },
+    { english: "Mula", tamil: "மூலம் (Moolam)" },
+    { english: "Purva Ashadha", tamil: "பூராடம் (Puradam)" },
+    { english: "Uttara Ashadha", tamil: "உத்திராடம் (Uthiradam)" },
+    { english: "Shravana", tamil: "திருவோணம் (Thiruvonam)" },
+    { english: "Dhanishta", tamil: "அவிட்டம் (Avittam)" },
+    { english: "Shatabhisha", tamil: "சதயம் (Sadhayam)" },
+    { english: "Purva Bhadrapada", tamil: "பூரட்டாதி (Purattadhi)" },
+    { english: "Uttara Bhadrapada", tamil: "உத்திரட்டாதி (Uthirattadhi)" },
+    { english: "Revati", tamil: "ரேவதி (Revathi)" },
   ]
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +78,7 @@ export function AstrologyForm({ onSubmit }: AstrologyFormProps) {
 
     try {
       // Generate astrological reading using Gemini API
-      const reading = await generateAstrologicalReading(formData)
+      const reading = await generateAstrologicalReading(formData, formData.language as 'english' | 'tamil')
       onSubmit(reading)
     } catch (error) {
       console.error('Error generating reading:', error)
@@ -187,21 +188,21 @@ export function AstrologyForm({ onSubmit }: AstrologyFormProps) {
             <CardHeader className="bg-gradient-to-r from-purple-50 to-amber-50 rounded-t-lg">
               <CardTitle className="flex items-center text-2xl text-gray-800">
                 <Sparkles className="h-6 w-6 mr-2 text-amber-500" />
-                Astrological Details (Optional)
+                Astrological Details
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-gray-700 font-medium">Rasi (Zodiac Sign)</Label>
-                  <Select value={formData.rasi} onValueChange={(value) => handleInputChange("rasi", value)}>
+                  <Label className="text-gray-700 font-medium">Rasi (Zodiac Sign) *</Label>
+                  <Select value={formData.rasi} onValueChange={(value) => handleInputChange("rasi", value)} required>
                     <SelectTrigger className="border-gray-200 focus:border-purple-400">
                       <SelectValue placeholder="Select your zodiac sign" />
                     </SelectTrigger>
                     <SelectContent>
                       {zodiacSigns.map((sign) => (
-                        <SelectItem key={sign} value={sign.toLowerCase()}>
-                          {sign}
+                        <SelectItem key={sign.english} value={sign.english.toLowerCase()}>
+                          {sign.english} - {sign.tamil}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -209,17 +210,30 @@ export function AstrologyForm({ onSubmit }: AstrologyFormProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-gray-700 font-medium">Nachathira (Birth Star)</Label>
-                  <Select value={formData.nachathira} onValueChange={(value) => handleInputChange("nachathira", value)}>
+                  <Label className="text-gray-700 font-medium">Nachathira (Birth Star) *</Label>
+                  <Select value={formData.nachathira} onValueChange={(value) => handleInputChange("nachathira", value)} required>
                     <SelectTrigger className="border-gray-200 focus:border-purple-400">
                       <SelectValue placeholder="Select your birth star" />
                     </SelectTrigger>
                     <SelectContent>
                       {nakshatras.map((nakshatra) => (
-                        <SelectItem key={nakshatra} value={nakshatra.toLowerCase()}>
-                          {nakshatra}
+                        <SelectItem key={nakshatra.english} value={nakshatra.english.toLowerCase()}>
+                          {nakshatra.english} - {nakshatra.tamil}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-gray-700 font-medium">Language / மொழி</Label>
+                  <Select value={formData.language} onValueChange={(value) => handleInputChange("language", value)}>
+                    <SelectTrigger className="border-gray-200 focus:border-purple-400">
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="english">English</SelectItem>
+                      <SelectItem value="tamil">தமிழ் (Tamil)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -231,7 +245,7 @@ export function AstrologyForm({ onSubmit }: AstrologyFormProps) {
             <Button
               type="submit"
               size="lg"
-              disabled={isLoading || !formData.name || !formData.dateOfBirth || !formData.placeOfBirth}
+              disabled={isLoading || !formData.name || !formData.dateOfBirth || !formData.placeOfBirth || !formData.rasi || !formData.nachathira}
               className="bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white px-12 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50"
             >
               {isLoading ? (

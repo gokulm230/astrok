@@ -2,12 +2,18 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Star } from "lucide-react"
+import { Menu, X, Star, Loader2 } from "lucide-react"
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [loadingStates, setLoadingStates] = useState({
+    reading: false,
+    loveCalculator: false
+  })
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +22,30 @@ export function Navigation() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  const handleNavClick = (href: string, type: 'reading' | 'loveCalculator' | 'other') => {
+    if (type !== 'other') {
+      setLoadingStates(prev => ({ ...prev, [type]: true }))
+      
+      // Clear loading state after navigation
+      setTimeout(() => {
+        setLoadingStates(prev => ({ ...prev, [type]: false }))
+      }, 1000)
+    }
+    setIsMobileMenuOpen(false)
+  }
+
+  const isLoading = (href: string) => {
+    if (href === '/astrology') return loadingStates.reading
+    if (href === '/love-calculator') return loadingStates.loveCalculator
+    return false
+  }
+
+  const getNavType = (href: string): 'reading' | 'loveCalculator' | 'other' => {
+    if (href === '/astrology') return 'reading'
+    if (href === '/love-calculator') return 'loveCalculator'
+    return 'other'
+  }
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -51,8 +81,12 @@ export function Navigation() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-amber-500 transition-colors duration-200 font-medium"
+                className="text-gray-700 hover:text-amber-500 transition-colors duration-200 font-medium flex items-center"
+                onClick={() => handleNavClick(item.href, getNavType(item.href))}
               >
+                {isLoading(item.href) && (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin text-amber-500" />
+                )}
                 {item.name}
               </Link>
             ))}
@@ -79,15 +113,24 @@ export function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 text-gray-700 hover:text-amber-500 transition-colors duration-200"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center px-3 py-2 text-gray-700 hover:text-amber-500 transition-colors duration-200"
+                  onClick={() => handleNavClick(item.href, getNavType(item.href))}
                 >
+                  {isLoading(item.href) && (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin text-amber-500" />
+                  )}
                   {item.name}
                 </Link>
               ))}
               <div className="px-3 py-2">
                 <Link href="/astrology">
-                  <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
+                  <Button 
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center justify-center"
+                    onClick={() => handleNavClick('/astrology', 'reading')}
+                  >
+                    {loadingStates.reading && (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    )}
                     Get Reading
                   </Button>
                 </Link>
